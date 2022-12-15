@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using Cinemachine;
 using UnityEngine.Rendering.PostProcessing;
+using static UnityEditor.PlayerSettings;
 
 public class Brandon_PlayerMovement : MonoBehaviour
 {
@@ -26,9 +27,13 @@ public class Brandon_PlayerMovement : MonoBehaviour
     private bool canBoost = false;
 
     // Waypoints
-    public GameObject destination;
+    public Transform destination;
     private Rigidbody rb;
+    public Camera shipCam;
     public float turningSpeed = 1f;
+    public int forwardForce = 1; // Forward Force
+    public int movementForce = 1; // Movement Force
+
 
 
     [Space]
@@ -53,9 +58,30 @@ public class Brandon_PlayerMovement : MonoBehaviour
         SetSpeed(forwardSpeed);
     }
 
+    void FixedUpdate()
+    {
+        rb.AddForce(transform.forward * forwardForce);
+    }
+
     void Update()
     {
-
+        // Add Force Movement using control physics
+        /*if (Input.GetKey(KeyCode.W))
+        {
+            rb.AddForce(transform.up * movementForce);
+        }
+        if (Input.GetKey(KeyCode.A))
+        {
+            rb.AddForce(-transform.right * movementForce);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            rb.AddForce(-transform.up * movementForce);
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            rb.AddForce(transform.right * movementForce);
+        }*/
         // Waypoint Movement Start
         /*Vector3 lookPos = destination.transform.position - transform.position;
         lookPos.y = 0;
@@ -112,9 +138,48 @@ public class Brandon_PlayerMovement : MonoBehaviour
             int dir = Input.GetButtonDown("TriggerL") ? -1 : 1;
             QuickSpin(dir);
         }
+    }
 
-        
-
+    void OnTriggerEnter(Collider collider)
+    {
+        // Add Force to the player if triggered
+        if (collider.CompareTag("object"))
+        {
+            movementForce = 50000;
+            rb.AddForce(-transform.forward * movementForce);
+        }
+        if (collider.CompareTag("object") && Input.GetKey(KeyCode.D))
+        {
+            movementForce = 50000;
+            rb.AddForce(-transform.right * movementForce);
+        }
+        if (collider.CompareTag("object") && Input.GetKey(KeyCode.W))
+        {
+            movementForce = 50000;
+            rb.AddForce(-transform.up * movementForce);
+        }
+        if (collider.CompareTag("object") && Input.GetKey(KeyCode.A))
+        {
+            movementForce = 50000;
+            rb.AddForce(transform.right * movementForce);
+        }
+        if (collider.CompareTag("object") && Input.GetKey(KeyCode.S))
+        {
+            movementForce = 50000;
+            rb.AddForce(transform.up * movementForce);
+        }
+    }
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.CompareTag("object"))
+        {
+            rb.velocity = Vector3.zero;
+            movementForce = 0;
+        }
+        if (collider.CompareTag("PlayerPos"))
+        {
+            playerModel.transform.position = destination.transform.position;
+        }
     }
 
     public static Vector3 Lerp(Vector3 a, Vector3 b, float p)

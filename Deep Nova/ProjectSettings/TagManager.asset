@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Terrain_00_02
+  - object
+  - PlayerPos
   layers:
   - Default
   - TransparentFX

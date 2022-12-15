@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
 public class ProjectileGun : MonoBehaviour
 {
@@ -85,16 +86,15 @@ public class ProjectileGun : MonoBehaviour
         //RaycastHit hit;
 
         // locating mouse position in the 3D world sence
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            //transform.position = hit.point;
-        }
+        //Ray ray = mainCamera.ScreenPointToRay(attackPoint.position);
+        //if (Physics.Raycast(ray, out RaycastHit hit))
+        //{
+        //  transform.position = hit.point;
+        //}
 
         // Check if Ray hits something
-        Vector3 targetPoint;
-        Physics.Raycast(ray, out hit, 100000, layers);
-        targetPoint = hit.point;
+        //Physics.Raycast(ray, out hit, 100000, layers);
+
         //if (Physics.Raycast(ray, out hit)){
         //    targetPoint = hit.point;
         //}
@@ -102,8 +102,18 @@ public class ProjectileGun : MonoBehaviour
         //    targetPoint = ray.GetPoint(1000);
 
         // Calculate direction from attackPoint to targetPoint
-        Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
+        Vector3 targetPoint;
+        RaycastHit hit;
 
+        if (Physics.Raycast(muzzleFlash.transform.position, muzzleFlash.transform.forward, out hit, 100000))
+            Debug.Log(hit.transform.name);
+
+        {
+            //Target target = hit.transform.GetComponent<Target>();
+        }
+
+        targetPoint = hit.point;
+        Vector3 directionWithoutSpread = targetPoint - attackPoint.position;
         // Calculate Spread
         float x = Random.Range(-spread, spread);
         float y = Random.Range(-spread, spread);
